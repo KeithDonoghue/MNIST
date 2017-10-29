@@ -15,7 +15,7 @@ void loadMNIST();
 int main()
 {
   loadMNIST();
-  //  vectorStuff();
+  vectorStuff();
   
 }
 
