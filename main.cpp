@@ -1,5 +1,9 @@
 #include <iostream>
 #include "armadillo"
+#include "IdxFile.h"
+
+
+
 #include <vector>
 #include <cmath>
 #include <string>
@@ -8,54 +12,66 @@
 #include <type_traits>
 
 
+
 void vectorStuff();
 void loadMNIST();
-
 
 int main()
 {
   loadMNIST();
-  vectorStuff();
+  // vectorStuff();
   
 }
+
+
+
+
 
 void loadMNIST()
 {
 
-  std::ifstream testImages("/home/ubuntu/code/Data/t10k-images.idx3-ubyte");
-  std::ifstream testLabels("/home/ubuntu/code/Data/t10k-labels.idx1-ubyte");
-  std::ifstream trainImages("/home/ubuntu/code/Data/train-images.idx3-ubyte");
-  std::ifstream trainLabels("/home/ubuntu/code/Data/train-labels.idx1-ubyte");
+  IdxFile trainImages("/home/ubuntu/code/Data/train-images.idx3-ubyte");
+  IdxFile trainLabels("/home/ubuntu/code/Data/train-labels.idx1-ubyte");
+  IdxFile testImages("/home/ubuntu/code/Data/t10k-images.idx3-ubyte");
+  IdxFile testLabels("/home/ubuntu/code/Data/t10k-labels.idx1-ubyte");
 
-  if(testImages.is_open())
+  testImages.readData();
+  std::vector<arma::mat> matrices = testImages.readImageMats();
+
+  for(int i = 0; i < 5 ; ++i)
     {
-      int x,y, z, w;
-      testImages >> x >> y >> z >> w;
-      std::cout << x << ' ' << y  << ' ' << z << ' ' <<  w << std::endl;
+  testImages.writeImage(i);
+  std::cout << matrices[i].t() << std::endl;
+    }
+  /*
+  if(trainLabels.is_open())
+    {
+      uint8_t x,y, z, w;
+      uint16_t a, b, c, d;
+      trainLabels >> x >> y >> z >> w >> a >> b >> c >> d;
+
+      std::cout  << std::hex << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
+      std::cout << a  << ' '  <<  b << ' ' << c << ' ' << (int)d<< std::endl;
       std::cout << "Open!" << std::endl;
     }
   if(testLabels.is_open())
     {
-      int x,y, z, w;
-      testLabels >> x >> y >> z >> w;
-      std::cout << x << ' ' << y  << ' ' << z << ' ' <<  w << std::endl;
+      uint8_t x,y, z, w;
+      uint16_t a, b, c, d;
+      testLabels >> x >> y >> z >> w >> a >> b >> c >> d;
+
+      std::cout  << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
+      std::cout <<(int) a  << ' ' <<  (int)b << ' ' << (int)c << ' ' << (int)d<< std::endl;
       std::cout << "Open!" << std::endl;
     }
   if(trainImages.is_open())
     {
-      int x,y, z, w;
+     uint8_t x,y, z, w;
       trainImages >> x >> y >> z >> w;
-      std::cout << x << ' ' << y  << ' ' << z << ' ' <<  w << std::endl;
+      std::cout  << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
       std::cout << "Open!" << std::endl;
     }
-  if(trainLabels.is_open())
-    {
-      int x,y, z, w;
-      trainLabels >> x >> y >> z >> w;
-      std::cout << x << ' ' << y  << ' ' << z << ' ' <<  w << std::endl;
-      std::cout << "Open!" << std::endl;
-    }
-
+     */
 }
 
 
