@@ -23,6 +23,7 @@ public:
   void readData();
   void writeImage(int);
   std::vector<arma::mat> readImageMats();
+  std::vector<arma::mat> readLabelMats();
 
 private:
   void readImages();

@@ -87,15 +87,21 @@ void IdxFile::readImages()
 {
   for(int i = 0 ; i < mNumImages.value ; ++i)
     {
-  std::vector<uint8_t> image;
-  image.resize(mRows.value*mCols.value);
-  mFile.read((char*)image.data(), image.size());
-  mImages.push_back(image);
+      std::vector<uint8_t> image;
+      image.resize(mRows.value*mCols.value);
+      mFile.read((char*)image.data(), image.size());
+      mImages.push_back(image);
     }
 }
 
 void IdxFile::readLabels()
 {
+  uint8_t value;
+  for(int i = 0 ; i < mNumImages.value ; ++i)
+    {
+      mFile.read((char*)&value, 1);
+      mLabels.push_back(value);
+    }
 }
 
 
@@ -125,6 +131,22 @@ std::vector<arma::mat> IdxFile::readImageMats()
       std::vector<double> tempVec(image.begin(), image.end());
       arma::mat temp(tempVec.data(), mCols.value*mRows.value, 1);
       matrices.push_back(temp);
+    }
+  
+  return matrices;
+}
+
+
+std::vector<arma::mat> IdxFile::readLabelMats()
+{
+  readData();
+  
+  std::vector<arma::mat> matrices;
+  for(auto label : mLabels)
+    {
+      arma::mat tempMat(10,1, arma::fill::zeros);
+      tempMat[label] = 1;
+      matrices.push_back(tempMat);
     }
   
   return matrices;

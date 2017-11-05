@@ -15,6 +15,7 @@
 
 void vectorStuff();
 void loadMNIST();
+arma::mat sigmoid(arma::mat);
 
 int main()
 {
@@ -36,23 +37,47 @@ void loadMNIST()
   IdxFile testLabelsFile("/home/ubuntu/code/Data/t10k-labels.idx1-ubyte");
 
   std::vector<arma::mat> trainMatrices = trainImagesFile.readImageMats();
-  std::vector<arma::mat> trainLabels = trainLabelsFile.readImageMats();
-  std::vector<arma::mat> testMatrices = testImagesFile.readImageMats();
-  std::vector<arma::mat> testaLabels = testLabelsFile.readImageMats();
+    std::vector<arma::mat> trainLabels =  trainLabelsFile.readLabelMats();
+   std::vector<arma::mat> testMatrices = testImagesFile.readImageMats();
+  std::vector<arma::mat> testLabels = testLabelsFile.readLabelMats();
 
+  
 
-  std::cout << trainMatrices[1].size() << std::endl;
-  arma::mat Weights1(15, 784, arma::fill::randn);
-  arma::mat Weights2(10, 15, arma::fill::randn);
+  /*
+  std::cout << trainMatrices[1].t() << std::endl;
+  std::cout << testMatrices[1].t() << std::endl;
 
-  arma::mat Biases1(15, 1, arma::fill::randn);
-  arma::mat Biases2(10, 1, arma::fill::randn);
+  std::cout << trainLabels[1] << std::endl;
+  std::cout << testLabels[1] << std::endl;
+  */
+  arma::mat Weights1(15, 784, arma::fill::randu);
+  arma::mat Weights2(10, 15, arma::fill::randu);
 
+  Weights1 =  Weights1 - 0.5;
+  Weights2 =  Weights2 - 0.5;
+
+  arma::mat Biases1(15, 1, arma::fill::randu);
+  arma::mat Biases2(10, 1, arma::fill::randu);
+
+  Biases1 = Biases1 - 0.5;
+  Biases2 = Biases2 - 0.5;
+  
   arma::mat Z1 = Weights1 * trainMatrices[1];
   std::cout << Z1 << std::endl;
   std::cout << Biases1 << std::endl;
-  std::cout << Z1 + Biases1 << std::endl;
-  
+  arma::mat A1 = sigmoid(Z1 + Biases1);
+  std::cout << A1 << std::endl;
+  std::cout << A1*10 << std::endl;
+  std::cout << A1*100 << std::endl;
+  std::cout << A1*1000 << std::endl;
+
+  arma::mat Z2 = Weights2 * A1;
+  arma::mat A2 = sigmoid(Z2 + Biases2);
+  //  std::cout << A2 << std::endl;
+
+
+  arma::mat C = A2 - trainLabels[1];
+  //std::cout << C << std::endl;
 }
 
 
@@ -65,6 +90,17 @@ void typeStuf()
   std::cout << std::is_integral<int8_t>::value << std::endl;
   std::cout << "Hello World!" << std::endl;
   
+}
+
+arma::mat sigmoid(arma::mat input)
+{
+    auto sigmoid = [](arma::mat::elem_type& val)
+    {
+      double temp = 1 + std::exp(-val);
+      val = 1/temp;
+    };
+
+    return input.for_each(sigmoid);
 }
 
 
