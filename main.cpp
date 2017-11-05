@@ -30,48 +30,29 @@ int main()
 void loadMNIST()
 {
 
-  IdxFile trainImages("/home/ubuntu/code/Data/train-images.idx3-ubyte");
-  IdxFile trainLabels("/home/ubuntu/code/Data/train-labels.idx1-ubyte");
-  IdxFile testImages("/home/ubuntu/code/Data/t10k-images.idx3-ubyte");
-  IdxFile testLabels("/home/ubuntu/code/Data/t10k-labels.idx1-ubyte");
+  IdxFile trainImagesFile("/home/ubuntu/code/Data/train-images.idx3-ubyte");
+  IdxFile trainLabelsFile("/home/ubuntu/code/Data/train-labels.idx1-ubyte");
+  IdxFile testImagesFile("/home/ubuntu/code/Data/t10k-images.idx3-ubyte");
+  IdxFile testLabelsFile("/home/ubuntu/code/Data/t10k-labels.idx1-ubyte");
 
-  testImages.readData();
-  std::vector<arma::mat> matrices = testImages.readImageMats();
+  std::vector<arma::mat> trainMatrices = trainImagesFile.readImageMats();
+  std::vector<arma::mat> trainLabels = trainLabelsFile.readImageMats();
+  std::vector<arma::mat> testMatrices = testImagesFile.readImageMats();
+  std::vector<arma::mat> testaLabels = testLabelsFile.readImageMats();
 
-  for(int i = 0; i < 5 ; ++i)
-    {
-  testImages.writeImage(i);
-  std::cout << matrices[i].t() << std::endl;
-    }
-  /*
-  if(trainLabels.is_open())
-    {
-      uint8_t x,y, z, w;
-      uint16_t a, b, c, d;
-      trainLabels >> x >> y >> z >> w >> a >> b >> c >> d;
 
-      std::cout  << std::hex << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
-      std::cout << a  << ' '  <<  b << ' ' << c << ' ' << (int)d<< std::endl;
-      std::cout << "Open!" << std::endl;
-    }
-  if(testLabels.is_open())
-    {
-      uint8_t x,y, z, w;
-      uint16_t a, b, c, d;
-      testLabels >> x >> y >> z >> w >> a >> b >> c >> d;
+  std::cout << trainMatrices[1].size() << std::endl;
+  arma::mat Weights1(15, 784, arma::fill::randn);
+  arma::mat Weights2(10, 15, arma::fill::randn);
 
-      std::cout  << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
-      std::cout <<(int) a  << ' ' <<  (int)b << ' ' << (int)c << ' ' << (int)d<< std::endl;
-      std::cout << "Open!" << std::endl;
-    }
-  if(trainImages.is_open())
-    {
-     uint8_t x,y, z, w;
-      trainImages >> x >> y >> z >> w;
-      std::cout  << (int) x << ' ' << (int)y  << ' ' << (int)z << ' ' <<  (int)w << std::endl;
-      std::cout << "Open!" << std::endl;
-    }
-     */
+  arma::mat Biases1(15, 1, arma::fill::randn);
+  arma::mat Biases2(10, 1, arma::fill::randn);
+
+  arma::mat Z1 = Weights1 * trainMatrices[1];
+  std::cout << Z1 << std::endl;
+  std::cout << Biases1 << std::endl;
+  std::cout << Z1 + Biases1 << std::endl;
+  
 }
 
 

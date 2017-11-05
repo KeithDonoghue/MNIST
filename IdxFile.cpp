@@ -29,7 +29,8 @@ std::ostream& operator<<(std::ostream& os, rInt rhs)
 
 IdxFile::IdxFile(std::string fileName):
   mFileName(fileName),
-  mFile(fileName)
+  mFile(fileName),
+  mDataRead(false)
 {
 
 
@@ -69,11 +70,16 @@ IdxFile::IdxFile(std::string fileName):
 
 void IdxFile::readData()
 {
-  if(mMagic.data[3] == 3)
-    readImages();
+  if(!mDataRead)
+    {
+      if(mMagic.data[3] == 3)
+	readImages();
+      
+      if(mMagic.data[3] == 1)
+	readLabels();
+    }
 
-  if(mMagic.data[3] == 1)
-    readLabels();
+  mDataRead = true;
 }
 
 
@@ -111,11 +117,13 @@ void IdxFile::writeImage(int index)
 
 std::vector<arma::mat> IdxFile::readImageMats()
 {
+  readData();
+  
   std::vector<arma::mat> matrices;
   for(auto image : mImages)
     {
       std::vector<double> tempVec(image.begin(), image.end());
-      arma::mat temp(tempVec.data(), mCols.value, mRows.value);
+      arma::mat temp(tempVec.data(), mCols.value*mRows.value, 1);
       matrices.push_back(temp);
     }
   

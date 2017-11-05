@@ -18,13 +18,6 @@ typedef union
 
 
 class IdxFile{
-private:
-  std::string mFileName;
-  std::ifstream mFile;
-  rInt mMagic, mNumImages, mRows, mCols;
-  std::vector<uint8_t> mLabels;
-  std::vector<std::vector<uint8_t>> mImages;
-
 public:
   IdxFile(std::string);
   void readData();
@@ -35,5 +28,15 @@ private:
   void readImages();
     void readLabels();
   int getDataSize(rInt);
+
+
+private:
+  bool mDataRead;
+  std::string mFileName;
+  std::ifstream mFile;
+  rInt mMagic, mNumImages, mRows, mCols;
+  std::vector<uint8_t> mLabels;
+  std::vector<std::vector<uint8_t>> mImages;
+
 };
 
